@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Passwort-Spiel</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+    }
+    .intro-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: black;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      font-weight: 600;
+      z-index: 9999;
+      transition: opacity 2s ease;
+      user-select: none;
+    }
+    .intro-screen p {
+      font-size: 1.3rem;
+      margin-top: 1rem;
+    }
+    .watermark {
+      position: fixed;
+      top: 15px;
+      right: 80px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: white;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0.6;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      z-index: 5000;
+    }
+    .attempts {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      user-select: none;
+      z-index: 5000;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .icon-left {
+      position: fixed;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      font-size: 2.4rem;
+      cursor: pointer;
+      user-select: none;
+      z-index: 4000;
+      animation: leftHeartZigZag 2s infinite alternate ease-in-out;
+    }
+    @keyframes leftHeartZigZag {
+      0% { transform: translate(0, 0) rotate(-15deg); }
+      25% { transform: translate(-5px, 5px) rotate(-10deg); }
+      50% { transform: translate(0, 10px) rotate(-5deg); }
+      75% { transform: translate(-5px, 5px) rotate(-10deg); }
+      100% { transform: translate(0, 0) rotate(-15deg); }
+    }
+    .sound-icon {
+      position: fixed;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      font-size: 2.4rem;
+      cursor: pointer;
+      user-select: none;
+      z-index: 4000;
+      animation: rightHeartZigZag 2s infinite alternate ease-in-out;
+    }
+    @keyframes rightHeartZigZag {
+      0% { transform: translate(0, 0) rotate(15deg); }
+      25% { transform: translate(5px, 5px) rotate(10deg); }
+      50% { transform: translate(0, 10px) rotate(5deg); }
+      75% { transform: translate(5px, 5px) rotate(10deg); }
+      100% { transform: translate(0, 0) rotate(15deg); }
+    }
+    #soundWindow {
+      position: fixed;
+      top: 60px;
+      right: 60px;
+      background: black;
+      border-radius: 16px;
+      padding: 20px;
+      color: white;
+      font-size: 16px;
+      max-width: 320px;
+      z-index: 4500;
+      text-align: left;
+      box-shadow: 0 0 15px #ff69b4;
+    }
+    #soundWindow a {
+      color: #00ffcc;
+      text-decoration: underline;
+    }
+    #tipWindow {
+      position: fixed;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 480px;
+      background: black;
+      border-radius: 16px;
+      padding: 20px;
+      color: white;
+      font-size: 18px;
+      box-shadow: 0 0 30px #ff1493;
+      display: none;
+      z-index: 6000;
+      user-select: none;
+    }
+    #tipWindow p {
+      margin: 0 0 8px 0;
+    }
+    #tipWindow button {
+      margin-top: 10px;
+      padding: 6px 16px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background: #ff1493;
+      color: white;
+      cursor: pointer;
+    }
+    .main {
+      padding: 100px 20px 40px 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      user-select: none;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: white;
+    }
+    input[type="text"] {
+      font-size: 1.4rem;
+      padding: 14px 20px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      box-shadow: 0 0 10px #ff1493;
+      margin-bottom: 12px;
+      color: black;
+      font-weight: 700;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    button {
+      font-size: 1.2rem;
+      padding: 14px 30px;
+      border-radius: 20px;
+      border: none;
+      background: #ff1493;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #ff69b4;
+    }
+    #message-box {
+      margin-top: 20px;
+      font-size: 1.3rem;
+      min-height: 48px;
+      font-weight: 700;
+      color: white;
+      user-select: text;
+    }
+    #bottom-msg {
+      margin-top: 40px;
+      font-size: 1.5rem;
+      color: white;
+      font-weight: 800;
+      user-select: none;
+    }
+    /* Fingerherz unten zentriert */
+    #finger-heart {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 6rem;
+      user-select: none;
+      color: white;
+      z-index: 7000;
+      animation: breathe 3s ease-in-out infinite;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro Overlay -->
+  <div class="intro-screen" id="introScreen">
+    <h1>Willkommen Ben 💖</h1>
+    <p>Ich liebe dich sooo sehr ✨🥺💍</p>
+  </div>
+
+  <div class="watermark">❤️ Ben & Melissa ❤️</div>
+
+  <div class="attempts" id="attemptDisplay">Versuche: 0</div>
+
+  <div class="icon-left" onclick="toggleTipWindow()">❤️</div>
+  <div class="sound-icon" onclick="toggleSoundWindow()">🩷</div>
+
+  <div id="soundWindow" style="display:none;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <strong>Spotifyplaylist ⬇️</strong>
+      <button onclick="toggleSoundWindow()" style="background:none;border:none;color:white;font-size:18px;cursor:pointer;">✖️</button>
+    </div>
+    <a href="https://open.spotify.com/playlist/2MwRHyL8nIEAu0dnVWYDq8?si=f71da8140ff64456" target="_blank">Zur Playlist</a>
+  </div>
+
+  <div class="main" id="main-content">
+    <h1>Rate das geheime Passwort 💌</h1>
+    <input type="text" id="guess" placeholder="Dein Versuch..." autocomplete="off" />
+    <button onclick="checkPassword()">Absenden</button>
+    <div id="message-box">Du kannst anfangen Babe, ich wünsche dir viel Spaß und ich hoffe das es dir gefällt 🫶❤️</div>
+    <div id="bottom-msg">VIEL GLÜCK BABY!!❤️💍</div>
+  </div>
+
+  <div id="tipWindow"></div>
+
+  <div id="finger-heart">🫶</div>
+
+  <script>
+    // Intro ausblenden nach 6 Sekunden
+    const introScreen = document.getElementById('introScreen');
+    setTimeout(() => {
+      introScreen.style.pointerEvents = 'none';
+      introScreen.style.opacity = '0';
+      introScreen.style.visibility = 'hidden';
+    }, 6000);
+
+    const correctPassword = "duundichfürimmer";
+    let attempts = 0;
+    const collectedTips = [];
+    let tipVisible = false;
+    let soundVisible = false;
+
+    const tipps = [
+      "1/6 Tipp: Hey Babe, denk dran: Es ist ein zusammengesetztes Wort, ganz ohne Leerzeichen 🥰",
+      "2/6 Tipp: Das Wort beginnt mit etwas, das dich betrifft… vielleicht dein Name oder einfach nur 'du' 👀",
+      "3/6 Tipp: Es gibt ein kleines Wort in der Mitte, das Dinge verbindet ❤️",
+      "4/6 Tipp: Dieses Wort beschreibt etwas auf ewig... so richtig für immer 🕰️",
+      "5/6 Tipp: Es sind nur kleine Buchstaben!! 🩷",
+      "6/6 Tipp: Denk an etwas, das wir uns versprochen haben, für immer und ewig 🫶"
+    ];
+
+    const tippSteps = [6, 12, 18, 24, 30, 40];
+
+    function checkPassword() {
+      const inputField = document.getElementById("guess");
+      const input = inputField.value.toLowerCase().trim();
+      const message = document.getElementById("message-box");
+      attempts++;
+      document.getElementById("attemptDisplay").textContent = `Versuche: ${attempts}`;
+
+      const tipIndex = tippSteps.indexOf(attempts);
+      if (tipIndex !== -1) {
+        collectedTips.push(tipps[tipIndex]);
+      }
+
+      if (input === correctPassword) {
+        document.body.innerHTML = `
+          <div class="watermark">❤️ Ben & Melissa ❤️</div>
+          <div class="attempts" style="background-color:black;">Versuche: ${attempts}</div>
+          <div class="sound-icon" onclick="toggleSoundWindow()">❤️</div>
+          <div id="soundWindow" style="position:fixed;top:60px;left:60px;background:black;color:white;padding:20px;border-radius:16px;display:block;text-align:left;font-size:16px;box-shadow: 0 0 15px #ff69b4;">
+            <div style='display:flex;justify-content:space-between;align-items:center;'>
+              <strong>Spotifyplaylist ⬇️</strong>
+              <button onclick="toggleSoundWindow()" style="background:none;border:none;color:white;font-size:18px;cursor:pointer;">✖️</button>
+            </div>
+            <a href="https://open.spotify.com/playlist/2MwRHyL8nIEAu0dnVWYDq8?si=f71da8140ff64456" target="_blank" style="color:#00ffcc; text-decoration: underline;">Zur Playlist</a>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:black;">
+            <div style="text-align:center; font-size:28px; color:white; animation: fadeIn 2s ease-in-out; max-width: 700px; padding: 30px; background:black; border-radius: 16px; user-select:none;">
+              Hey, du hast es echt geschafft! 💖 Ich finde es so schön, dass du dir Mühe gegeben hast und solange gerätselt hast, bis du mein Passwort herausgefunden hast. Das Passwort ist nur für dich, weil du mir so viel bedeutest. Ich freue mich total, dass wir zusammen so viel Spaß haben und hoffe, dass wir noch viele schöne Momente erleben werden. Danke, dass du immer an meiner Seite bist, auch wenn es nicht immer so einfach ist. Du bist einfach was ganz Besonderes für mich und ich liebe dich sooo sehrrrrr! ❤️✨ Jetzt kannst du dich entspannen und mit mir was spielen, aber wehe du verrätst das Passwort jemandem! 😜
+            </div>
+          </div>`;
+      } else {
+        if (tipVisible) toggleTipWindow();
+        if(input === "") {
+          message.textContent = "Bitte gib was ein Baby✨💖";
+        } else {
+          message.textContent = "Das ist nicht das richtige Passwort Schatz, hihihi🫶😝❤️💍";
+        }
+      }
+      inputField.value = "";
+    }
+
+    // Entertaste als Absenden
+    const inputEl = document.getElementById("guess");
+    inputEl.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        checkPassword();
+      }
+    });
+
+    // Tipp Fenster
+    function toggleTipWindow() {
+      const tipWindow = document.getElementById("tipWindow");
+      if (tipVisible) {
+        tipWindow.style.display = "none";
+        tipVisible = false;
+      } else {
+        if (collectedTips.length > 0) {
+          tipWindow.innerHTML = collectedTips.map(t => `<p>${t}</p>`).join('') + '<br><button onclick="toggleTipWindow()">Schließen ✖️</button>';
+        } else {
+          tipWindow.innerHTML = "Noch keine Tipps freigeschaltet❤️🤫<br><br><button onclick=\"toggleTipWindow()\">Schließen ✖️</button>";
+        }
+        tipWindow.style.display = "block";
+        tipVisible = true;
+      }
+    }
+
+    // Sound Fenster
+    function toggleSoundWindow() {
+      const soundWindow = document.getElementById("soundWindow");
+      if (soundVisible) {
+        soundWindow.style.display = "none";
+        soundVisible = false;
+      } else {
+        soundWindow.style.display = "block";
+        soundVisible = true;
+      }
+    }
+  </script>
+</body>
+</html>
