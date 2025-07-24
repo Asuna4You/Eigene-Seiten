@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Herz für Ben 💖</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ❤️Ben & Melissa❤️ */
+    .watermark {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: pink;
+      font-weight: bold;
+      font-size: 18px;
+      text-shadow: 0 0 10px pink;
+    }
+
+    /* Intro */
+    .intro {
+      position: fixed;
+      inset: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      color: pink;
+      animation: fadeOut 3s ease forwards;
+      animation-delay: 2.5s;
+      z-index: 5;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    /* Herz und Text */
+    .container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1;
+    }
+
+    .heart {
+      font-size: 100px;
+      color: #00d9ff;
+      filter: drop-shadow(0 0 20px #00d9ff);
+      cursor: pointer;
+      transition: all 1s ease;
+    }
+
+    .heart.warm {
+      color: #ff1493;
+      filter: drop-shadow(0 0 30px #ff1493);
+      transform: scale(1.1) rotate(10deg);
+    }
+
+    .message {
+      margin-top: 30px;
+      font-size: 22px;
+      max-width: 80%;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+
+    .message.visible {
+      opacity: 1;
+    }
+
+    .text {
+      margin-top: 20px;
+      font-size: 20px;
+      color: white;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: 1px solid pink;
+      text-shadow: 0 0 5px pink;
+    }
+
+    /* Zickzack-Herzen */
+    .hearts-left, .hearts-right {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      font-size: 30px;
+      color: red;
+      pointer-events: none;
+    }
+
+    .hearts-left {
+      left: 10px;
+      transform: rotate(2deg);
+    }
+
+    .hearts-right {
+      right: 10px;
+      transform: rotate(-2deg);
+    }
+
+    .hearts-left span:nth-child(even) {
+      transform: rotate(-25deg);
+    }
+
+    .hearts-left span:nth-child(odd) {
+      transform: rotate(25deg);
+    }
+
+    .hearts-right span:nth-child(even) {
+      transform: rotate(25deg);
+    }
+
+    .hearts-right span:nth-child(odd) {
+      transform: rotate(-25deg);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Intro -->
+  <div class="intro">Hey Baby 💖</div>
+
+  <!-- Wasserzeichen -->
+  <div class="watermark">❤️Ben & Melissa❤️</div>
+
+  <!-- Herzen am Rand -->
+  <div class="hearts-left">
+    <span>❤️</span>
+    <span>❤️</span>
+    <span>❤️</span>
+    <span>❤️</span>
+    <span>❤️</span>
+  </div>
+  <div class="hearts-right">
+    <span>❤️</span>
+    <span>❤️</span>
+    <span>❤️</span>
+    <span>❤️</span>
+    <span>❤️</span>
+  </div>
+
+  <!-- Hauptinhalt -->
+  <div class="container">
+    <div class="heart" id="heart">💙</div>
+    <div class="text" id="hint">Mein Herz ist kalt… bis du es berührst</div>
+    <div class="message" id="message">
+      Deine Liebe macht mein Herz wieder warm... und das bleibt für immer so 🥺💍💖
+    </div>
+  </div>
+
+  <script>
+    const heart = document.getElementById('heart');
+    const message = document.getElementById('message');
+    const hint = document.getElementById('hint');
+
+    heart.addEventListener('click', () => {
+      heart.classList.add('warm');
+      heart.textContent = '💖';
+      message.classList.add('visible');
+      hint.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
